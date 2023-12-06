@@ -1,0 +1,19 @@
+body,a,header,p,h1,h2,h3,h4,h5,h6,div,li,ul {
+    margin: 0;
+    padding: 0;
+    border: none;
+}
+
+body{
+    background-color: rgb(93, 92, 92);
+    color: white;
+    display: flex;
+    flex-direction: column;
+}
+
+button{
+    background-color: black;
+    color: white;
+    border-color: white;
+    border-radius: 20px;
+}

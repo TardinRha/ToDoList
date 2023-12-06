@@ -1,0 +1,24 @@
+- Tarefas: conjunto de listas de Tarefas
+opção de criar uma lista de tarefas
+
+        - Lista de tarefas:
+            - Nome/Titulo 
+            - Data para resolução da lista de tarefas (colocar a data do dia como padrão)
+            - Tarefas:
+                - Na primeira linha vai ter um botão "+" para adicionar uma tarefa, apenas quando preenchida, o botão aparece na linha de baixo
+                - Em cada tarefa um botão para marcar que já foi feita
+                - Botão de excluir a tarefa
+                - Botão de ordenação de lista (ordem adicionada, ordem alfabética, ordem alfabética invertida)
+            - Botão de excluir a lista
+            - Botão de mudar a cor da lista (escolher uma padrão para iniciar)
+            - Quando todas as tarefas forem marcadas como feitas, perguntar ao usuário se quer mover para o final das listas
+
+
+CRUD:
+- Criar lista
+- Criar item na lista
+- Pegar itens registrados e mostrar na lista
+- Editar lista
+- Editar item na lista
+- Apagar item na lista
+- Apagar lista

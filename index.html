@@ -14,29 +14,38 @@
 <body>
     <header>
         Bem vindo(a)!
-        <button>Nova Lista</button> <!-- Faz aparecer uma nova ListaDeTarefas no inicio da página -->
+
+        <!-- Faz aparecer uma nova ListaDeTarefas no inicio da página -->
+        <button id="newList" onclick="newList()">Nova Lista</button> 
+
     </header>
 
-    <main>
+    <main id="main">
         <div id="listaDeTarefas">
-            <form action="">
+
+            <form id="cabeçalhoLista">
                 <input type="text" id="titulo" name="titulo">
                 <input type="date" id="data-prazo" name="data-prazo">
             </form>
+
             <br>
-            <button>Novo Item</button> <!-- Faz aparecer um novo FormularioItem abaixo do último item da lista -->
-            <form action="" id="FormularioItem">
-                <input type="text" id="item" name="item">
-                <input type="submit" value="Salvar Item">
-                <!-- Quando clicar em "Salvar Item", botão deve desaparecer. Botão deve reaparecer ao clicar em "Eitar Item" -->
-                <button>Editar Item</button>
-                <button>Deletar Item</button>
+
+            <button id="newItem" onclick="newItem()">Novo Item</button> <!-- Faz aparecer um novo FormularioItem abaixo do último item da lista -->
+            <br>
+
+            <div id="listTable"></div>
+
+            <form method="post" id="FormularioItem">
+                <input type="text" id="inputItem" name="inputItem">
+                <button id="addList"> OK</button>
+                <!-- Quando clicar em "OK", botão deve desaparecer. Botão deve reaparecer ao clicar em "Eitar Item" -->
             </form>
+
         </div>
     </main>
 
     <footer>
-        &copy; 2023 - Rhaissa Tardin - <a href="https://github.com/TardinRha"> <img class="logo-github" src="images/github.png" alt="github"></a>
+        &copy; 2023 - Rhaíssa Tardin - <a href="https://github.com/TardinRha"> <img class="logo-github" src="images/github.png" alt="github"></a>
     </footer>
 
     <script src="script.js"></script>

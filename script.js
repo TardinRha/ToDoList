@@ -10,11 +10,19 @@ let formNewItem = document.getElementById("FormularioItem");
 // }
 // const funcaoNomeQualquer = () => 3;
 
-const addListButton = document.getElementById("addList");
-addListButton.addEventListener("click", saveItem);
 
 
 let listItem = [];
+
+let input = document.createElement("input");
+input.type = "text";
+
+const buttonOK = document.createElement("button");
+buttonOK.value = "OK";
+buttonOK.addEventListener("click", saveItem);
+
+const newItemButton = document.getElementById("newItem");
+newItemButton.addEventListener("click", newItem);
 
 
 function getListItem(){
@@ -26,19 +34,27 @@ function newList(){
     //quero que apareça outra div "ListaDeTarefas" no inicio da página
 }
 
-function newItem(){
-    //
+function newItem(event){
+    event.preventDefault();
+    let divForm = document.getElementById("formNewItem");
+
+    let form = document.createElement("form");
+    form.appendChild(input);
+    form.appendChild(buttonOK);
+    divForm.appendChild(form);
+    //falta fazer o formulario sumir após o botão ok ser clicado
 }
+
 
 function saveItem(event){
     event.preventDefault();
-    let input = document.getElementById("inputItem");
-    listItem.push(input.value);
+    let inputForm = document.getElementById("inputItem");
+    listItem.push(inputForm.value);
     //
     const listDiv = document.getElementById("listTable");
     const divContainer = document.createElement("div")
     const paragrafo = document.createElement("p");
-    paragrafo.textContent = input.value;
+    paragrafo.textContent = inputForm.value;
     divContainer.appendChild(paragrafo)
 
     const botaoEditar = document.createElement("button");
@@ -52,7 +68,7 @@ function saveItem(event){
     divContainer.appendChild(botaoApagar)
 
     listDiv.appendChild(divContainer)
-    input.value = "";
+    inputForm.value = "";
 }
 
 function editItem(){

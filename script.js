@@ -17,9 +17,9 @@ let listItem = [];
 let input = document.createElement("input");
 input.type = "text";
 
-const buttonOK = document.createElement("button");
-buttonOK.value = "OK";
-buttonOK.addEventListener("click", saveItem);
+// const buttonOK = document.createElement("button");
+// buttonOK.value = "OK";
+// buttonOK.addEventListener("click", saveItem);
 
 const newItemButton = document.getElementById("newItem");
 newItemButton.addEventListener("click", newItem);
@@ -39,6 +39,11 @@ function newItem(event){
     let divForm = document.getElementById("formNewItem");
 
     let form = document.createElement("form");
+
+    const buttonOK = document.createElement("button");
+    buttonOK.value = "OK";
+    buttonOK.addEventListener("click", saveItem);
+
     form.appendChild(input);
     form.appendChild(buttonOK);
     divForm.appendChild(form);
@@ -48,13 +53,13 @@ function newItem(event){
 
 function saveItem(event){
     event.preventDefault();
-    let inputForm = document.getElementById("inputItem");
-    listItem.push(inputForm.value);
+    //let inputForm = document.getElementById("inputItem");
+    listItem.push(input.value);
     //
     const listDiv = document.getElementById("listTable");
     const divContainer = document.createElement("div")
     const paragrafo = document.createElement("p");
-    paragrafo.textContent = inputForm.value;
+    paragrafo.textContent = input.value;
     divContainer.appendChild(paragrafo)
 
     const botaoEditar = document.createElement("button");
@@ -68,7 +73,7 @@ function saveItem(event){
     divContainer.appendChild(botaoApagar)
 
     listDiv.appendChild(divContainer)
-    inputForm.value = "";
+    input.value = "";
 }
 
 function editItem(){

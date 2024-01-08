@@ -1,4 +1,4 @@
-let divNewList = document.getElementById("listaDeTarefas");
+let divNewList = document.getElementById("listTable");
 
 let formNewItem = document.getElementById("FormularioItem");
 
@@ -17,21 +17,43 @@ let listItem = [];
 let input = document.createElement("input");
 input.type = "text";
 
-// const buttonOK = document.createElement("button");
-// buttonOK.value = "OK";
-// buttonOK.addEventListener("click", saveItem);
-
-const newItemButton = document.getElementById("newItem");
-newItemButton.addEventListener("click", newItem);
-
-
 function getListItem(){
     //quero retornar o "listItem" / talvez como uma tabela
     
 }
 
-function newList(){
-    //quero que apareça outra div "ListaDeTarefas" no inicio da página
+const newL = document.getElementById("newList");
+newL.addEventListener("click", newList);
+
+function newList(event){
+    event.preventDefault();
+    console.log("teste teste");
+    //criar uma div
+    const divTasks = document.createElement("div");
+    
+    //pegar o titulo e a data do formulario
+    const titleForm = document.getElementById("titulo");
+    const dataExpirationForm = document.getElementById("data-prazo");
+
+    let title = document.createElement("p");
+    title.textContent = titleForm.value;
+
+    let dataExpiration = document.createElement("p");
+    dataExpiration.textContent = dataExpirationForm.value;
+
+
+    //o botão nova tarefa vai ter o escutador de click para a função newItem
+    const newItemButton = document.createElement("button");
+    newItemButton.textContent = "Nova Tarefa";
+    newItemButton.addEventListener("click", newItem);
+
+    //colocar o titulo e a data do formulario, e o botão nova tarefa na div
+    divTasks.appendChild(title);
+    divTasks.appendChild(dataExpiration);
+    divTasks.appendChild(newItemButton);
+
+    divNewList.appendChild(divTasks);
+
 }
 
 function newItem(event){
@@ -41,21 +63,21 @@ function newItem(event){
     let form = document.createElement("form");
 
     const buttonOK = document.createElement("button");
-    buttonOK.value = "OK";
-    buttonOK.addEventListener("click", saveItem);
-
+    buttonOK.textContent = "OK";
+    
     form.appendChild(input);
     form.appendChild(buttonOK);
     divForm.appendChild(form);
-    //falta fazer o formulario sumir após o botão ok ser clicado
+    buttonOK.addEventListener("click", (event) => saveItem(event, form));
+
 }
 
 
-function saveItem(event){
+function saveItem(event, form){
     event.preventDefault();
-    //let inputForm = document.getElementById("inputItem");
+    
     listItem.push(input.value);
-    //
+    
     const listDiv = document.getElementById("listTable");
     const divContainer = document.createElement("div")
     const paragrafo = document.createElement("p");
@@ -74,6 +96,8 @@ function saveItem(event){
 
     listDiv.appendChild(divContainer)
     input.value = "";
+
+    form.remove();
 }
 
 function editItem(){

@@ -15,8 +15,7 @@
     <header>
         Bem vindo(a)!
 
-        <!-- Faz aparecer uma nova ListaDeTarefas no inicio da página -->
-        <button id="newList" onclick="newList()">Nova Lista</button> 
+        
 
     </header>
 
@@ -26,23 +25,17 @@
             <form id="cabeçalhoLista">
                 <input type="text" id="titulo" name="titulo">
                 <input type="date" id="data-prazo" name="data-prazo">
+                <button id="newList">Criar Nova Lista de Tarefas</button> 
             </form>
-
             <br>
-
-            <button id="newItem" onclick="newItem()">Novo Item</button>
+            <!-- <button id="newItem" onclick="newItem()">Nova Tarefa</button> -->
+            <!-- cliquei no botão criar nova lista de tarefas -> aparece card com o titulo digitado e a data junto com o botão nova tarefa -->
+            <!-- ATUALMENTE: botão nova tarefa aparece direto na tela e "pego" ele no javascript. MUDAR: criar ele dentro do método que cria o card da tarefa -->
             <br>
 
             <div id="listTable"></div>
 
             <div id="formNewItem"></div>
-
-            <!-- <form method="post" id="FormularioItem">
-                <input type="text" id="inputItem" name="inputItem">
-                <button id="addList"> OK</button>
-              -- Quando clicar em "OK", botão deve desaparecer. Botão deve reaparecer ao clicar em "Eitar Item" -->
-            <!--</form> -->
-
         </div>
     </main>
 
@@ -58,3 +51,4 @@
     </script>
 </body>
 </html>
+

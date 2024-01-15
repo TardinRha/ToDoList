@@ -1,4 +1,5 @@
 let counter = 0;
+let editOpen = false;
 
 let divNewList = document.getElementById("listTable");
 
@@ -48,7 +49,7 @@ function newList(event){
     //o botão nova tarefa vai ter o escutador de click para a função newItem
     const newItemButton = document.createElement("button");
     newItemButton.textContent = "Nova Tarefa";
-    newItemButton.addEventListener("click", newItem);
+    newItemButton.addEventListener("click", (event) => newItem(event, divTasks.id));
 
     //colocar o titulo e a data do formulario, e o botão nova tarefa na div
     divTasks.appendChild(title);
@@ -59,9 +60,9 @@ function newList(event){
 
 }
 
-function newItem(event){
+function newItem(event, divTaskId){
     event.preventDefault();
-    let divForm = document.getElementById("formNewItem"); //isso está errado. preciso pegar o id da div que está o button
+    let divForm = document.getElementById(divTaskId);
 
     let form = document.createElement("form");
 
@@ -71,42 +72,98 @@ function newItem(event){
     form.appendChild(input);
     form.appendChild(buttonOK);
     divForm.appendChild(form);
-    buttonOK.addEventListener("click", (event) => saveItem(event, form));
+    buttonOK.addEventListener("click", (event) => saveItem(event, form, divTaskId));
 
 }
 
-
-function saveItem(event, form){
+let counterDivItem = 0;
+function saveItem(event, form, divTaskId){
     event.preventDefault();
     
-    listItem.push(input.value);
+    //listItem.push(input.value);
     
-    const listDiv = document.getElementById("listTable");
-    const divContainer = document.createElement("div")
+    const listDiv = document.getElementById(divTaskId);
+    const divItem = document.createElement("div");
+    divItem.id = "divItem" + counter + "_" + counterDivItem;
+    counterDivItem++;
+
     const paragrafo = document.createElement("p");
+    paragrafo.id = "par";
     paragrafo.textContent = input.value;
-    divContainer.appendChild(paragrafo)
+    divItem.appendChild(paragrafo);
 
     const botaoEditar = document.createElement("button");
     botaoEditar.textContent = "Editar";
-    botaoEditar.addEventListener("click", () => editItem(paragrafo));
-    divContainer.appendChild(botaoEditar);
+    botaoEditar.addEventListener("click", (event) => editItem(event, divTaskId, divItem.id, paragrafo.id));
+    divItem.appendChild(botaoEditar);
 
     const botaoApagar = document.createElement("button");
     botaoApagar.textContent = "Deletar"
-    botaoApagar.addEventListener("click", () => deleteItem(divContainer))
-    divContainer.appendChild(botaoApagar)
+    botaoApagar.addEventListener("click", (event) => deleteItem(event, divTaskId, divItem.id));
+    divItem.appendChild(botaoApagar);
 
-    listDiv.appendChild(divContainer)
+    listDiv.appendChild(divItem);
     input.value = "";
 
     form.remove();
 }
 
-function editItem(){
+function editItem(event, divTaskId, divItemId, paragrafoId){
+    event.preventDefault();
+    
+    if(editOpen){
+        return;
+    }
 
+    const divTask = document.getElementById(divTaskId);
+    const divItem = document.getElementById(divItemId);
+    let paragrafo = divItem.querySelector('p');
+
+    let divEdit = document.createElement("div");
+    divEdit.id = "divEdit";
+
+    let formEdit = document.createElement("form");
+    formEdit.id = "formEdit";
+
+    let input = document.createElement("input");
+    input.type = "text";
+    input.value = paragrafo.textContent;
+
+    const saveEditButton = document.createElement("button");
+    saveEditButton.textContent = "Salvar";
+    saveEditButton.addEventListener("click", (event) => {
+        event.preventDefault();
+        saveEdit(event, divItemId, input, divEdit.id);
+    });
+
+    formEdit.appendChild(input);
+    formEdit.appendChild(saveEditButton);
+
+    divEdit.appendChild(formEdit);
+
+    divItem.appendChild(divEdit);
+    editOpen = true;
 }
 
-function deleteItem(elemento){
+function saveEdit(event, divItemId, input, divEditId){
+    event.preventDefault();
 
+    const divItem = document.getElementById(divItemId);
+    let paragrafo = divItem.querySelector('p');
+
+    paragrafo.textContent = input.value;
+
+    let divEditToRemove = document.getElementById(divEditId);
+    divItem.remove(divEditToRemove);
+    //saveInLocalStorage();
+
+    editOpen = false;
+}
+
+function deleteItem(event, divTaskId, divItemId){
+    event.preventDefault();
+    const divTask = document.getElementById(divTaskId);
+    const divItem = document.getElementById(divItemId);
+    divTask.removeChild(divItem);
+    //saveInLocalStorage();
 }

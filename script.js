@@ -1,3 +1,5 @@
+let counter = 0;
+
 let divNewList = document.getElementById("listTable");
 
 let formNewItem = document.getElementById("FormularioItem");
@@ -27,9 +29,10 @@ newL.addEventListener("click", newList);
 
 function newList(event){
     event.preventDefault();
-    console.log("teste teste");
     //criar uma div
     const divTasks = document.createElement("div");
+    divTasks.id = "list" + (counter);
+    counter++;
     
     //pegar o titulo e a data do formulario
     const titleForm = document.getElementById("titulo");
@@ -58,7 +61,7 @@ function newList(event){
 
 function newItem(event){
     event.preventDefault();
-    let divForm = document.getElementById("formNewItem");
+    let divForm = document.getElementById("formNewItem"); //isso está errado. preciso pegar o id da div que está o button
 
     let form = document.createElement("form");
 

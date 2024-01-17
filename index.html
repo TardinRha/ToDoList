@@ -14,28 +14,22 @@
 <body>
     <header>
         Bem vindo(a)!
-
-        
-
     </header>
 
     <main id="main">
-        <div id="listaDeTarefas">
-
-            <form id="cabeçalhoLista">
-                <input type="text" id="titulo" name="titulo">
-                <input type="date" id="data-prazo" name="data-prazo">
-                <button id="newList">Criar Nova Lista de Tarefas</button> 
+        <div id="form-header">
+            <form id="form-header-list">
+                <label for="title">Nome da lista:</label>
+                <input type="text" id="title" name="title">
+                <label for="deadline">Prazo final:</label>
+                <input type="date" id="deadline" name="deadline">
+                <button id="button-newList">Criar Nova Lista de Tarefas</button> 
+                <button id="button-clearAll">Limpar Tudo</button>
             </form>
-            <br>
-            <!-- <button id="newItem" onclick="newItem()">Nova Tarefa</button> -->
-            <!-- cliquei no botão criar nova lista de tarefas -> aparece card com o titulo digitado e a data junto com o botão nova tarefa -->
-            <!-- ATUALMENTE: botão nova tarefa aparece direto na tela e "pego" ele no javascript. MUDAR: criar ele dentro do método que cria o card da tarefa -->
-            <br>
+        </div>
+        
+        <div id="body-todo">
 
-            <div id="listTable"></div>
-
-            <div id="formNewItem"></div> <!--conferir se a existencia dessa div é utilizada-->
         </div>
     </main>
 

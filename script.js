@@ -1,169 +1,211 @@
 let counter = 0;
 let editOpen = false;
 
-let divNewList = document.getElementById("listTable");
-
-let formNewItem = document.getElementById("FormularioItem");
-
-//const botaoComValor3= document.getElementById("botaoComValor3");
-//adicionar nesse botão a capacidade de responder ao evento de click
-//botaoComValor3.addEventListener("click", () => logarNumero(3))
-// function logarNumero(numero){
-//     console.log(numero)
-// }
-// const funcaoNomeQualquer = () => 3;
-
-
-
-let listItem = [];
-
-let input = document.createElement("input");
-input.type = "text";
-
-function getListItem(){
-    //quero retornar o "listItem" / talvez como uma tabela
-    
+class ListaDeTarefas{
+    constructor(title, deadline){
+        this.title = title;
+        this.deadline = deadline;
+        this.tasks = [];
+    }
 }
 
-const newL = document.getElementById("newList");
-newL.addEventListener("click", newList);
+let lists = [];
 
-function newList(event){
+const buttonNewList = document.getElementById("button-newList");
+buttonNewList.addEventListener("click", addNewList);
+
+function addNewList(event){
     event.preventDefault();
-    //criar uma div
-    const divTasks = document.createElement("div");
-    divTasks.id = "list" + (counter);
-    counter++;
+
     
-    //pegar o titulo e a data do formulario
-    const titleForm = document.getElementById("titulo");
-    const dataExpirationForm = document.getElementById("data-prazo");
+    let title = document.getElementById("title").value;
+    let deadline = document.getElementById("deadline").value;
+    
+    const validate = validateInput(title);
 
-    let title = document.createElement("p");
-    title.textContent = titleForm.value;
+    if(!validate){
+        return;
+    }
 
-    let dataExpiration = document.createElement("p");
-    dataExpiration.textContent = dataExpirationForm.value;
+    const newList = new ListaDeTarefas(title, deadline);
+    lists.push(newList);
 
-
-    //o botão nova tarefa vai ter o escutador de click para a função newItem
-    const newItemButton = document.createElement("button");
-    newItemButton.textContent = "Nova Tarefa";
-    newItemButton.addEventListener("click", (event) => newItem(event, divTasks.id));
-
-    //colocar o titulo e a data do formulario, e o botão nova tarefa na div
-    divTasks.appendChild(title);
-    divTasks.appendChild(dataExpiration);
-    divTasks.appendChild(newItemButton);
-
-    divNewList.appendChild(divTasks);
-
+    saveInLocalStorage();
+    generateListElements();
 }
 
-function newItem(event, divTaskId){
+function generateListElements(){
+     let bodyToDo = document.getElementById("body-todo");
+     bodyToDo.innerHTML = "";
+     if(lists){
+        for(let i = 0; i < lists.length; i++){
+            const divToDo = document.createElement("div");
+            divToDo.id = `list_${counter}`;
+            counter++;
+
+            let title = document.createElement("p");
+            title.textContent = lists[i].title;
+
+            let dataExpiration = document.createElement("p");
+            dataExpiration.textContent = lists[i].deadline;
+
+            const buttonNewTask = document.createElement("button");
+            buttonNewTask.textContent = "Nova Tarefa";
+            buttonNewTask.addEventListener("click", (event) => newTask(event, i, divToDo));
+        
+            divToDo.appendChild(title);
+            divToDo.appendChild(dataExpiration);
+            divToDo.appendChild(buttonNewTask);
+
+            if(lists[i].tasks){
+                for(let j = 0; j < lists[i].tasks.length; j++){
+                const divTask = document.createElement('div');
+                divTask.id = `${divToDo.id}_task${j}`;
+
+                let task = document.createElement('p');
+                task.textContent = lists[i].tasks[j];
+
+                const buttonEditTask = document.createElement('button');
+                buttonEditTask.textContent = "Editar";
+                buttonEditTask.addEventListener("click", (event) => editTask(event, i, j, divTask));
+
+                const buttonDeleteTask = document.createElement('button');
+                buttonDeleteTask.textContent = "Deletar";
+                buttonDeleteTask.addEventListener("click", (event) => {
+                    event.preventDefault();
+                    deleteTask(event, i, j);
+                    generateListElements()});
+
+                divTask.appendChild(task);
+                divTask.appendChild(buttonEditTask);
+                divTask.appendChild(buttonDeleteTask);
+
+                divToDo.appendChild(divTask);
+                }
+            }
+        
+            bodyToDo.appendChild(divToDo);
+        }
+     }
+}
+
+function newTask(event, index, divToDo){
     event.preventDefault();
-    let divForm = document.getElementById(divTaskId);
+    if(editOpen){
+        return;
+    }
 
     let form = document.createElement("form");
-
+    form.id = "form-new-task";
+    
+    let input = document.createElement("input");
+    input.type = "text";
+    
     const buttonOK = document.createElement("button");
     buttonOK.textContent = "OK";
+    buttonOK.addEventListener("click", (event) => {
+        event.preventDefault();
+        saveTask(event, input, index, form);
+        generateListElements();
+    });
     
     form.appendChild(input);
     form.appendChild(buttonOK);
-    divForm.appendChild(form);
-    buttonOK.addEventListener("click", (event) => saveItem(event, form, divTaskId));
-
+    divToDo.appendChild(form);    
+    
+    editOpen = true;
 }
 
-let counterDivItem = 0;
-function saveItem(event, form, divTaskId){
+function saveTask(event, input, index){
     event.preventDefault();
     
-    //listItem.push(input.value);
-    
-    const listDiv = document.getElementById(divTaskId);
-    const divItem = document.createElement("div");
-    divItem.id = "divItem" + counter + "_" + counterDivItem;
-    counterDivItem++;
+    lists[index].tasks.push(input.value);
 
-    const paragrafo = document.createElement("p");
-    paragrafo.id = "par";
-    paragrafo.textContent = input.value;
-    divItem.appendChild(paragrafo);
+    saveInLocalStorage();
 
-    const botaoEditar = document.createElement("button");
-    botaoEditar.textContent = "Editar";
-    botaoEditar.addEventListener("click", (event) => editItem(event, divTaskId, divItem.id, paragrafo.id));
-    divItem.appendChild(botaoEditar);
-
-    const botaoApagar = document.createElement("button");
-    botaoApagar.textContent = "Deletar"
-    botaoApagar.addEventListener("click", (event) => deleteItem(event, divTaskId, divItem.id));
-    divItem.appendChild(botaoApagar);
-
-    listDiv.appendChild(divItem);
-    input.value = "";
-
-    form.remove();
+    editOpen = false;
 }
 
-function editItem(event, divTaskId, divItemId, paragrafoId){
+function editTask(event, indexList, indexTask, divTask){
     event.preventDefault();
     
     if(editOpen){
         return;
     }
 
-    const divTask = document.getElementById(divTaskId);
-    const divItem = document.getElementById(divItemId);
-    let paragrafo = divItem.querySelector('p');
-
-    let divEdit = document.createElement("div");
-    divEdit.id = "divEdit";
+    let divEditTask = document.createElement("div");
+    divEditTask.id = "divEditTask";
 
     let formEdit = document.createElement("form");
     formEdit.id = "formEdit";
 
-    let input = document.createElement("input");
-    input.type = "text";
-    input.value = paragrafo.textContent;
+    let inputEdit = document.createElement("input");
+    inputEdit.type = "text";
+    inputEdit.value = lists[indexList].tasks[indexTask];
 
-    const saveEditButton = document.createElement("button");
-    saveEditButton.textContent = "Salvar";
-    saveEditButton.addEventListener("click", (event) => {
+    const buttonSaveEdit = document.createElement("button");
+    buttonSaveEdit.textContent = "Salvar";
+    buttonSaveEdit.addEventListener("click", (event) => {
         event.preventDefault();
-        saveEdit(event, divItemId, input, divEdit.id);
+        saveEdit(event, indexList, indexTask, inputEdit, divEditTask);
+        generateListElements();
     });
 
-    formEdit.appendChild(input);
-    formEdit.appendChild(saveEditButton);
+    formEdit.appendChild(inputEdit);
+    formEdit.appendChild(buttonSaveEdit);
 
-    divEdit.appendChild(formEdit);
+    divEditTask.appendChild(formEdit);
 
-    divItem.appendChild(divEdit);
+    divTask.appendChild(divEditTask);
+
     editOpen = true;
 }
 
-function saveEdit(event, divItemId, input, divEditId){
-    event.preventDefault();
+function saveEdit(event, indexList, indexTask, inputEdit){
+    lists[indexList].tasks[indexTask] = inputEdit.value;
 
-    const divItem = document.getElementById(divItemId);
-    let paragrafo = divItem.querySelector('p');
-
-    paragrafo.textContent = input.value;
-
-    let divEditToRemove = document.getElementById(divEditId);
-    divItem.remove(divEditToRemove);
-    //saveInLocalStorage();
+    saveInLocalStorage();
 
     editOpen = false;
 }
 
-function deleteItem(event, divTaskId, divItemId){
-    event.preventDefault();
-    const divTask = document.getElementById(divTaskId);
-    const divItem = document.getElementById(divItemId);
-    divTask.removeChild(divItem);
-    //saveInLocalStorage();
+function deleteTask(event, indexList, indexTask){
+    lists[indexList].tasks.splice(indexTask, 1);
+
+    saveInLocalStorage();
 }
+
+const buttonClearAll = document.getElementById("button-clearAll");
+buttonClearAll.addEventListener("click", clearAll);
+
+function clearAll(){ //método ainda não usado
+    localStorage.removeItem("todo");
+    generateListElements()
+}
+
+function saveInLocalStorage(){
+    let listsJSON = JSON.stringify(lists);
+    localStorage.setItem("todo", listsJSON);
+}
+
+function getInLocalStorage(){
+    let listsJSON = localStorage.getItem("todo");
+    let listsOBJ = JSON.parse(listsJSON);
+    if(listsJSON === null){
+        lists = [];
+        return;
+    }
+    lists = listsOBJ;
+}
+
+function validateInput(input){
+    const valueWithoutSpaces = input.trim();
+
+    if(valueWithoutSpaces === ''){
+        return false;
+    }
+    return true;
+}
+
+getInLocalStorage();
+generateListElements()

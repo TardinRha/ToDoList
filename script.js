@@ -17,26 +17,30 @@ buttonNewList.addEventListener("click", addNewList);
 function addNewList(event){
     event.preventDefault();
 
+    let title = document.getElementById("title");
+    let deadline = document.getElementById("deadline");
     
-    let title = document.getElementById("title").value;
-    let deadline = document.getElementById("deadline").value;
-    
-    const validate = validateInput(title);
+    const validate = validateInput(title.value);
 
     if(!validate){
         return;
     }
 
-    const newList = new ListaDeTarefas(title, deadline);
+    const newList = new ListaDeTarefas(title.value, deadline.value);
     lists.push(newList);
+
+    title.value = "";
+    deadline.value = "";
 
     saveInLocalStorage();
     generateListElements();
 }
 
+
 function generateListElements(){
-     let bodyToDo = document.getElementById("body-todo");
-     bodyToDo.innerHTML = "";
+    let bodyToDo = document.getElementById("body-todo");
+    bodyToDo.innerHTML = "";
+    
      if(lists){
         for(let i = 0; i < lists.length; i++){
             const divToDo = document.createElement("div");
@@ -49,12 +53,17 @@ function generateListElements(){
             let dataExpiration = document.createElement("p");
             dataExpiration.textContent = lists[i].deadline;
 
+            const buttonDeleteList = document.createElement("button");
+            buttonDeleteList.textContent = "Apagar Lista";
+            buttonDeleteList.addEventListener("click", (event) => deleteList(event, i));
+
             const buttonNewTask = document.createElement("button");
             buttonNewTask.textContent = "Nova Tarefa";
             buttonNewTask.addEventListener("click", (event) => newTask(event, i, divToDo));
         
             divToDo.appendChild(title);
             divToDo.appendChild(dataExpiration);
+            divToDo.appendChild(buttonDeleteList);
             divToDo.appendChild(buttonNewTask);
 
             if(lists[i].tasks){
@@ -89,6 +98,14 @@ function generateListElements(){
      }
 }
 
+function deleteList(event, indexList){
+    event.preventDefault();
+    lists.splice(indexList,1);
+
+    saveInLocalStorage();
+    generateListElements();
+}
+
 function newTask(event, index, divToDo){
     event.preventDefault();
     if(editOpen){
@@ -103,6 +120,7 @@ function newTask(event, index, divToDo){
     
     const buttonOK = document.createElement("button");
     buttonOK.textContent = "OK";
+    
     buttonOK.addEventListener("click", (event) => {
         event.preventDefault();
         saveTask(event, input, index, form);
@@ -118,7 +136,14 @@ function newTask(event, index, divToDo){
 
 function saveTask(event, input, index){
     event.preventDefault();
-    
+
+    const validate = validateInput(input.value);
+
+    if(!validate){
+        editOpen = false;
+        return;
+    }
+
     lists[index].tasks.push(input.value);
 
     saveInLocalStorage();
@@ -162,6 +187,13 @@ function editTask(event, indexList, indexTask, divTask){
 }
 
 function saveEdit(event, indexList, indexTask, inputEdit){
+    const validate = validateInput(inputEdit.value);
+
+    if(!validate){
+        editOpen = false;
+        return;
+    }
+
     lists[indexList].tasks[indexTask] = inputEdit.value;
 
     saveInLocalStorage();

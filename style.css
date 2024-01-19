@@ -16,8 +16,11 @@ button{
     color: white;
     border-color: white;
     border-radius: 20px;
+    display: flex;
+    align-items: center;
 }
 
 textarea{
     resize: none;
 }
+

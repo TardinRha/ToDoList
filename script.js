@@ -1,6 +1,21 @@
 let counter = 0;
 let editOpen = false;
 
+//img buttons
+const imgEditTitle = document.createElement("img");
+imgEditTitle.src = "images/edit.png";
+imgEditTitle.alt = "Editar";
+
+const imgEditDeadline = document.createElement("img");
+imgEditDeadline.src = "images/edit.png";
+imgEditDeadline.alt = "Editar";
+
+const imgEditTask = document.createElement("img");
+imgEditTask.src = "images/edit.png";
+imgEditTask.alt = "Editar";
+
+//fim img buttons
+
 class ListaDeTarefas{
     constructor(title, deadline){
         this.title = title;
@@ -20,9 +35,10 @@ function addNewList(event){
     let title = document.getElementById("title");
     let deadline = document.getElementById("deadline");
     
-    const validate = validateInput(title.value);
+    const validateTitle = validateText(title.value);
+    const validateDate = validateDeadline(deadline.value);
 
-    if(!validate){
+    if(!validateTitle || !validateDate){
         return;
     }
 
@@ -36,7 +52,6 @@ function addNewList(event){
     generateListElements();
 }
 
-
 function generateListElements(){
     let bodyToDo = document.getElementById("body-todo");
     bodyToDo.innerHTML = "";
@@ -47,11 +62,23 @@ function generateListElements(){
             divToDo.id = `list_${counter}`;
             counter++;
 
+            let divTitle = document.createElement("div");
             let title = document.createElement("p");
             title.textContent = lists[i].title;
+            const buttonEditTitle = document.createElement("button");
+            buttonEditTitle.appendChild(imgEditTitle);
+            buttonEditTitle.addEventListener("click", (event) => editTitleList(event, i, divTitle));
+            divTitle.appendChild(title);
+            divTitle.appendChild(buttonEditTitle);
 
-            let dataExpiration = document.createElement("p");
-            dataExpiration.textContent = lists[i].deadline;
+            let divDeadline = document.createElement("div");
+            let deadline = document.createElement("p");
+            deadline.textContent = lists[i].deadline;
+            const buttonEditDeadline = document.createElement("button");
+            buttonEditDeadline.appendChild(imgEditDeadline);
+            buttonEditDeadline.addEventListener("click", (event) => editDeadlineList(event, i, divDeadline));
+            divDeadline.appendChild(deadline);
+            divDeadline.appendChild(buttonEditDeadline);
 
             const buttonDeleteList = document.createElement("button");
             buttonDeleteList.textContent = "Apagar Lista";
@@ -61,41 +88,134 @@ function generateListElements(){
             buttonNewTask.textContent = "Nova Tarefa";
             buttonNewTask.addEventListener("click", (event) => newTask(event, i, divToDo));
         
-            divToDo.appendChild(title);
-            divToDo.appendChild(dataExpiration);
+            divToDo.appendChild(divTitle);
+            divToDo.appendChild(divDeadline);
             divToDo.appendChild(buttonDeleteList);
             divToDo.appendChild(buttonNewTask);
 
             if(lists[i].tasks){
                 for(let j = 0; j < lists[i].tasks.length; j++){
-                const divTask = document.createElement('div');
-                divTask.id = `${divToDo.id}_task${j}`;
+                    const imgClone = imgEditTask.cloneNode(true);
+                    const divTask = document.createElement('div');
+                    divTask.id = `${divToDo.id}_task${j}`;
 
-                let task = document.createElement('p');
-                task.textContent = lists[i].tasks[j];
+                    let task = document.createElement('p');
+                    task.textContent = lists[i].tasks[j];
 
-                const buttonEditTask = document.createElement('button');
-                buttonEditTask.textContent = "Editar";
-                buttonEditTask.addEventListener("click", (event) => editTask(event, i, j, divTask));
+                    const buttonEditTask = document.createElement('button');
+                    buttonEditTask.appendChild(imgClone);
+                    buttonEditTask.addEventListener("click", (event) => editTask(event, i, j, divTask));
 
-                const buttonDeleteTask = document.createElement('button');
-                buttonDeleteTask.textContent = "Deletar";
-                buttonDeleteTask.addEventListener("click", (event) => {
+                    const buttonDeleteTask = document.createElement('button');
+                    buttonDeleteTask.textContent = "x";
+                    buttonDeleteTask.addEventListener("click", (event) => {
                     event.preventDefault();
                     deleteTask(event, i, j);
                     generateListElements()});
 
-                divTask.appendChild(task);
-                divTask.appendChild(buttonEditTask);
-                divTask.appendChild(buttonDeleteTask);
+                    divTask.appendChild(task);
+                    divTask.appendChild(buttonEditTask);
+                    divTask.appendChild(buttonDeleteTask);
 
-                divToDo.appendChild(divTask);
+                    divToDo.appendChild(divTask);
                 }
             }
         
             bodyToDo.appendChild(divToDo);
         }
      }
+}
+
+function editTitleList(event, indexList, divTitle){
+    event.preventDefault();
+    
+    if(editOpen){
+        return;
+    }
+
+    let divEditTitle = document.createElement("div");
+    divEditTitle.id = "divEditTitle";
+
+    let formEditTitle = document.createElement("form");
+    formEditTitle.id = "formEditTitle";
+
+    let inputEditTitle = document.createElement("input");
+    inputEditTitle.type = "text";
+    inputEditTitle.value = lists[indexList].title;
+
+    const buttonSaveEditTitle = document.createElement("button");
+    buttonSaveEditTitle.textContent = "OK";
+    buttonSaveEditTitle.addEventListener("click", (event) => {
+        event.preventDefault();
+        saveEditTitle(event, indexList, inputEditTitle);
+        generateListElements();
+    });
+
+    formEditTitle.appendChild(inputEditTitle);
+    formEditTitle.appendChild(buttonSaveEditTitle);
+
+    divEditTitle.appendChild(formEditTitle);
+
+    divTitle.appendChild(divEditTitle);
+
+    editOpen = true;
+}
+
+function saveEditTitle(event, indexList, inputEditTitle){
+    const validateTitle = validateText(inputEditTitle.value);
+
+    if(!validateTitle){
+        editOpen = false;
+        return;
+    }
+
+    lists[indexList].title = inputEditTitle.value;
+
+    saveInLocalStorage();
+    editOpen = false;
+}
+
+function editDeadlineList(event, indexList, divDeadline){
+    event.preventDefault();
+    
+    if(editOpen){
+        return;
+    }
+
+    let formEditDeadline = document.createElement("form");
+    formEditDeadline.id = "formEditTitle";
+
+    let inputEditDeadline = document.createElement("input");
+    inputEditDeadline.type = "date";
+    inputEditDeadline.value = lists[indexList].deadline;
+
+    const buttonSaveEditDeadline = document.createElement("button");
+    buttonSaveEditDeadline.textContent = "OK";
+    buttonSaveEditDeadline.addEventListener("click", (event) => {
+        event.preventDefault();
+        saveEditDeadline(event, indexList, inputEditDeadline);
+        generateListElements();
+    });
+
+    formEditDeadline.appendChild(inputEditDeadline);
+    formEditDeadline.appendChild(buttonSaveEditDeadline);
+
+    divDeadline.appendChild(formEditDeadline);
+
+    editOpen = true;
+}
+
+function saveEditDeadline(event, indexList, inputEditDeadline){
+    const validateDate = validateDeadline(inputEditDeadline.value);
+    if(!validateDate){
+        editOpen = false;
+        return;
+    }
+
+    lists[indexList].deadline = inputEditDeadline.value;
+
+    saveInLocalStorage();
+    editOpen = false;
 }
 
 function deleteList(event, indexList){
@@ -137,7 +257,7 @@ function newTask(event, index, divToDo){
 function saveTask(event, input, index){
     event.preventDefault();
 
-    const validate = validateInput(input.value);
+    const validate = validateText(input.value);
 
     if(!validate){
         editOpen = false;
@@ -187,7 +307,7 @@ function editTask(event, indexList, indexTask, divTask){
 }
 
 function saveEdit(event, indexList, indexTask, inputEdit){
-    const validate = validateInput(inputEdit.value);
+    const validate = validateText(inputEdit.value);
 
     if(!validate){
         editOpen = false;
@@ -210,7 +330,7 @@ function deleteTask(event, indexList, indexTask){
 const buttonClearAll = document.getElementById("button-clearAll");
 buttonClearAll.addEventListener("click", clearAll);
 
-function clearAll(){ //método ainda não usado
+function clearAll(){
     localStorage.removeItem("todo");
     generateListElements()
 }
@@ -230,13 +350,28 @@ function getInLocalStorage(){
     lists = listsOBJ;
 }
 
-function validateInput(input){
+function validateText(input){
     const valueWithoutSpaces = input.trim();
 
     if(valueWithoutSpaces === ''){
         return false;
     }
     return true;
+}
+
+function validateDeadline(input){
+    //cria um objeto Date a partir da string da data
+    const inputDate = new Date(input);
+    inputDate.setHours(inputDate.getHours() + 3);
+    //cria um objeto Date para a data atual
+    const currentDate = new Date();
+    currentDate.setHours(0, 0, 0, 0)
+
+    if(inputDate >= currentDate){
+        return true;
+    }
+
+    return false;
 }
 
 getInLocalStorage();

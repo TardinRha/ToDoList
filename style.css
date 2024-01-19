@@ -3,24 +3,91 @@ body,a,header,textarea,p,h1,h2,h3,h4,h5,h6,div,li,ul {
     padding: 0;
     border: none;
 }
+html{
+    height: 100%;
+}
+footer{
+    position: fixed;
+    width: 100%;
+    text-align: center;
+    bottom: 0;
+    background-color: darkgray;
+}
+
+div{
+    display: flex;
+    align-items: center;
+}
 
 body{
-    background-color: rgb(93, 92, 92);
+    background-color: rgb(221, 221, 221);
     color: white;
-    display: flex;
-    flex-direction: column;
+    width: 95%;
+    height: 95%;
 }
 
 button{
     background-color: black;
     color: white;
-    border-color: white;
-    border-radius: 20px;
+    border-radius: 50px;
     display: flex;
     align-items: center;
+    font-size: small;
+    border: 0;
+    margin-left: 5px;
 }
 
 textarea{
     resize: none;
 }
 
+main{
+    padding: 30px;
+    margin: 30px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* overflow */
+
+.div-form-header{
+    background-color: rgb(96, 96, 96);
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+    margin: 10px;
+    border-radius: 20px;
+}
+
+.div-todo{
+    background-color: rgb(96, 96, 96);
+    padding: 10px;
+    margin: 10px;
+    border-radius: 20px;
+    font-size: medium;
+    flex-direction: column;
+    width: 35vw;
+    height: 50vh;
+}
+
+.div-body-todo{
+    display: flex;
+    flex-wrap: wrap;
+}
+
+
+.button-img{
+    padding: 0;
+}
+
+.img-button-todo{
+    width: 3vw;
+}
+.img-button-task{
+    width: 2vw;
+}
+
+.logo-github{
+    width: 5vw;
+}

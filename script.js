@@ -5,14 +5,22 @@ let editOpen = false;
 const imgEditTitle = document.createElement("img");
 imgEditTitle.src = "images/edit.png";
 imgEditTitle.alt = "Editar";
+imgEditTitle.className = "img-button-todo";
 
 const imgEditDeadline = document.createElement("img");
 imgEditDeadline.src = "images/edit.png";
 imgEditDeadline.alt = "Editar";
+imgEditDeadline.className = "img-button-todo";
 
 const imgEditTask = document.createElement("img");
 imgEditTask.src = "images/edit.png";
 imgEditTask.alt = "Editar";
+imgEditTask.className = "img-button-task";
+
+const imgDeleteTask = document.createElement("img");
+imgDeleteTask.src = "images/delete.png";
+imgDeleteTask.alt = "Deletar";
+imgDeleteTask.className = "img-button-task";
 
 //fim img buttons
 
@@ -58,15 +66,22 @@ function generateListElements(){
     
      if(lists){
         for(let i = 0; i < lists.length; i++){
+            const imgEditTitleClone = imgEditTitle.cloneNode(true);
+            const imgEditDeadlineClone = imgEditDeadline.cloneNode(true);
+
             const divToDo = document.createElement("div");
             divToDo.id = `list_${counter}`;
+            divToDo.className = "div-todo";
             counter++;
 
             let divTitle = document.createElement("div");
             let title = document.createElement("p");
             title.textContent = lists[i].title;
             const buttonEditTitle = document.createElement("button");
-            buttonEditTitle.appendChild(imgEditTitle);
+
+            buttonEditTitle.appendChild(imgEditTitleClone);
+
+            buttonEditTitle.className = "button-img";
             buttonEditTitle.addEventListener("click", (event) => editTitleList(event, i, divTitle));
             divTitle.appendChild(title);
             divTitle.appendChild(buttonEditTitle);
@@ -75,11 +90,15 @@ function generateListElements(){
             let deadline = document.createElement("p");
             deadline.textContent = lists[i].deadline;
             const buttonEditDeadline = document.createElement("button");
-            buttonEditDeadline.appendChild(imgEditDeadline);
+
+            buttonEditDeadline.appendChild(imgEditDeadlineClone);
+
+            buttonEditDeadline.className = "button-img";
             buttonEditDeadline.addEventListener("click", (event) => editDeadlineList(event, i, divDeadline));
             divDeadline.appendChild(deadline);
             divDeadline.appendChild(buttonEditDeadline);
 
+            const divButtonsTodo = document.createElement("div");
             const buttonDeleteList = document.createElement("button");
             buttonDeleteList.textContent = "Apagar Lista";
             buttonDeleteList.addEventListener("click", (event) => deleteList(event, i));
@@ -87,15 +106,19 @@ function generateListElements(){
             const buttonNewTask = document.createElement("button");
             buttonNewTask.textContent = "Nova Tarefa";
             buttonNewTask.addEventListener("click", (event) => newTask(event, i, divToDo));
-        
+
+            divButtonsTodo.appendChild(buttonDeleteList);
+            divButtonsTodo.appendChild(buttonNewTask);
+            
+            divToDo.appendChild(divButtonsTodo);
             divToDo.appendChild(divTitle);
             divToDo.appendChild(divDeadline);
-            divToDo.appendChild(buttonDeleteList);
-            divToDo.appendChild(buttonNewTask);
 
             if(lists[i].tasks){
                 for(let j = 0; j < lists[i].tasks.length; j++){
-                    const imgClone = imgEditTask.cloneNode(true);
+                    const imgEditClone = imgEditTask.cloneNode(true);
+                    const imgDeleteClone = imgDeleteTask.cloneNode(true);
+
                     const divTask = document.createElement('div');
                     divTask.id = `${divToDo.id}_task${j}`;
 
@@ -103,11 +126,13 @@ function generateListElements(){
                     task.textContent = lists[i].tasks[j];
 
                     const buttonEditTask = document.createElement('button');
-                    buttonEditTask.appendChild(imgClone);
+                    buttonEditTask.appendChild(imgEditClone);
+                    buttonEditTask.className = "button-img";
                     buttonEditTask.addEventListener("click", (event) => editTask(event, i, j, divTask));
 
                     const buttonDeleteTask = document.createElement('button');
-                    buttonDeleteTask.textContent = "x";
+                    buttonDeleteTask.appendChild(imgDeleteClone);
+                    buttonDeleteTask.className = "button-img";
                     buttonDeleteTask.addEventListener("click", (event) => {
                     event.preventDefault();
                     deleteTask(event, i, j);

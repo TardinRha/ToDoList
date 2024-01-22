@@ -9,11 +9,16 @@ html{
 footer{
     position: fixed;
     width: 100%;
-    text-align: center;
     bottom: 0;
     background-color: darkgray;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
+form{
+    display: flex;
+}
 div{
     display: flex;
     align-items: center;
@@ -34,7 +39,8 @@ button{
     align-items: center;
     font-size: small;
     border: 0;
-    margin-left: 5px;
+    margin: 5px;
+    border: 1px solid #ffffff;
 }
 
 textarea{
@@ -49,15 +55,31 @@ main{
     align-items: center;
 }
 
-/* overflow */
-
-.div-form-header{
+.div-form{
     background-color: rgb(96, 96, 96);
-    display: flex;
-    flex-direction: column;
     padding: 10px;
     margin: 10px;
     border-radius: 20px;
+}
+
+.div-header{
+    flex-direction: row;
+}
+
+.form-new-list{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.button-form-new-list{
+    justify-content: center;
+    width: 40px;
+    margin-block-end: 0;
+}
+
+.div-body-todo{
+    flex-wrap: wrap;
 }
 
 .div-todo{
@@ -67,27 +89,81 @@ main{
     border-radius: 20px;
     font-size: medium;
     flex-direction: column;
-    width: 35vw;
-    height: 50vh;
+    width: 375px;
+    height: 500px;
 }
 
-.div-body-todo{
+.div-tasks{
+    flex-direction: column;
+    height: 95%;
+    width: 98%;
+    overflow: auto;
+}
+
+.div-infos-list{
+    flex-direction: column;
+    padding-right: 5px;
+}
+
+.div-task{
+    width: 100%;
+    word-wrap: break-word;
     display: flex;
-    flex-wrap: wrap;
+    justify-content: space-between;
 }
 
-
-.button-img{
+.button-edit-header{
     padding: 0;
+    height: 30.62px;
+    width: 30.62px;
+    display: flex;
+    justify-content: center;
+}
+.img-button-edit-header{
+    height: 70%;
+    width: 70%;
 }
 
-.img-button-todo{
-    width: 3vw;
+.button-task{
+    height: 20px;
+    width: 20px;
+    padding: 0;
+    display: flex;
+    justify-content: center;
 }
 .img-button-task{
-    width: 2vw;
+    height: 70%;
+    width: 70%;
 }
 
 .logo-github{
-    width: 5vw;
+    width: 30px;
+}
+
+.button-new-task{
+    height: 22px;
+}
+
+.button-delete-task{
+    height: 22px;
+}
+
+.form-new-task{
+    display: flex;
+}
+
+.button-new-list{
+    font-size: xx-large;
+    height: 40px;
+    width: 40px;
+    display: flex;
+    justify-content: center;
+}
+
+.button-clear-all{
+    height: 40px;
+}
+
+.form-edit-task{
+    display: flex;
 }

@@ -2,15 +2,10 @@ let counter = 0;
 let editOpen = false;
 
 //img buttons
-const imgEditTitle = document.createElement("img");
-imgEditTitle.src = "images/edit.png";
-imgEditTitle.alt = "Editar";
-imgEditTitle.className = "img-button-todo";
-
-const imgEditDeadline = document.createElement("img");
-imgEditDeadline.src = "images/edit.png";
-imgEditDeadline.alt = "Editar";
-imgEditDeadline.className = "img-button-todo";
+const imgEditHeader = document.createElement("img");
+imgEditHeader.src = "images/edit.png";
+imgEditHeader.alt = "Editar";
+imgEditHeader.className = "img-button-edit-header";
 
 const imgEditTask = document.createElement("img");
 imgEditTask.src = "images/edit.png";
@@ -24,8 +19,8 @@ imgDeleteTask.className = "img-button-task";
 
 //fim img buttons
 
-class ListaDeTarefas{
-    constructor(title, deadline){
+class ListaDeTarefas {
+    constructor(title, deadline) {
         this.title = title;
         this.deadline = deadline;
         this.tasks = [];
@@ -35,18 +30,58 @@ class ListaDeTarefas{
 let lists = [];
 
 const buttonNewList = document.getElementById("button-newList");
-buttonNewList.addEventListener("click", addNewList);
+buttonNewList.addEventListener("click", generateFormAddNewList);
 
-function addNewList(event){
-    event.preventDefault();
+function generateFormAddNewList() {
+    const divHeader = document.getElementById("header");
 
-    let title = document.getElementById("title");
-    let deadline = document.getElementById("deadline");
-    
+    const divForm = document.createElement("div");
+    divForm.id = "divForm";
+    divForm.className = "div-form";
+
+    const formCreateList = document.createElement("form");
+    formCreateList.className = "form-new-list";
+
+    const inputTitle = document.createElement("input");
+    inputTitle.type = "text";
+    inputTitle.id = "title";
+    const labelTitle = document.createElement("label");
+    labelTitle.textContent = "Título:";
+    labelTitle.setAttribute("for", "title");
+    labelTitle.appendChild(inputTitle);
+
+    const inputDeadline = document.createElement("input");
+    inputDeadline.type = "date";
+    inputDeadline.id = "deadline";
+    const labelDeadline = document.createElement("label");
+    labelDeadline.textContent = "Data Final:";
+    labelDeadline.setAttribute("for", "deadline");
+    labelDeadline.appendChild(inputDeadline);
+
+    const buttonCreateNewList = document.createElement("button");
+    buttonCreateNewList.textContent = "OK";
+    buttonCreateNewList.className = "button-form-new-list";
+    buttonCreateNewList.addEventListener("click", (ev) => {
+        addNewList(ev, inputTitle, inputDeadline);
+        divForm.remove(divHeader);
+    });
+
+    formCreateList.appendChild(labelTitle);
+    formCreateList.appendChild(labelDeadline);
+    formCreateList.appendChild(buttonCreateNewList);
+
+    divForm.appendChild(formCreateList);
+
+    divHeader.appendChild(divForm);
+}
+
+function addNewList(ev, title, deadline) {
+    ev.preventDefault();
+
     const validateTitle = validateText(title.value);
     const validateDate = validateDeadline(deadline.value);
 
-    if(!validateTitle || !validateDate){
+    if (!validateTitle || !validateDate) {
         return;
     }
 
@@ -60,231 +95,212 @@ function addNewList(event){
     generateListElements();
 }
 
-function generateListElements(){
-    let bodyToDo = document.getElementById("body-todo");
+function generateListElements() {
+    const bodyToDo = document.getElementById("body-todo");
     bodyToDo.innerHTML = "";
-    
-     if(lists){
-        for(let i = 0; i < lists.length; i++){
-            const imgEditTitleClone = imgEditTitle.cloneNode(true);
-            const imgEditDeadlineClone = imgEditDeadline.cloneNode(true);
 
-            const divToDo = document.createElement("div");
-            divToDo.id = `list_${counter}`;
-            divToDo.className = "div-todo";
-            counter++;
+    for (let i = 0; i < lists.length; i++) {
+        const imgEditHeaderClone = imgEditHeader.cloneNode(true);
 
-            let divTitle = document.createElement("div");
-            let title = document.createElement("p");
-            title.textContent = lists[i].title;
-            const buttonEditTitle = document.createElement("button");
+        const divToDo = document.createElement("div");
+        divToDo.id = `list_${counter}`;
+        divToDo.className = "div-todo";
+        counter++;
 
-            buttonEditTitle.appendChild(imgEditTitleClone);
+        const divListHeader = document.createElement("div");
+        divListHeader.id = "divListHeader";
 
-            buttonEditTitle.className = "button-img";
-            buttonEditTitle.addEventListener("click", (event) => editTitleList(event, i, divTitle));
-            divTitle.appendChild(title);
-            divTitle.appendChild(buttonEditTitle);
 
-            let divDeadline = document.createElement("div");
-            let deadline = document.createElement("p");
-            deadline.textContent = lists[i].deadline;
-            const buttonEditDeadline = document.createElement("button");
+        const divInfosList = document.createElement("div");
+        divInfosList.id = "divInfosList";
+        divInfosList.className = "div-infos-list";
 
-            buttonEditDeadline.appendChild(imgEditDeadlineClone);
+        let title = document.createElement("p");
+        title.id = `t${i}`;
+        title.textContent = lists[i].title;
 
-            buttonEditDeadline.className = "button-img";
-            buttonEditDeadline.addEventListener("click", (event) => editDeadlineList(event, i, divDeadline));
-            divDeadline.appendChild(deadline);
-            divDeadline.appendChild(buttonEditDeadline);
+        let deadline = document.createElement("p");
+        deadline.id = `d${i}`;
+        deadline.textContent = lists[i].deadline;
 
-            const divButtonsTodo = document.createElement("div");
-            const buttonDeleteList = document.createElement("button");
-            buttonDeleteList.textContent = "Apagar Lista";
-            buttonDeleteList.addEventListener("click", (event) => deleteList(event, i));
+        divInfosList.appendChild(title);
+        divInfosList.appendChild(deadline);
 
-            const buttonNewTask = document.createElement("button");
-            buttonNewTask.textContent = "Nova Tarefa";
-            buttonNewTask.addEventListener("click", (event) => newTask(event, i, divToDo));
+        const buttonEditCabecalho = document.createElement("button");
+        buttonEditCabecalho.appendChild(imgEditHeaderClone);
+        buttonEditCabecalho.className = "button-edit-header";
+        buttonEditCabecalho.addEventListener("click", (event) => editCabecalhoList(event, i, title, deadline, divListHeader, divInfosList, buttonEditCabecalho));
 
-            divButtonsTodo.appendChild(buttonDeleteList);
-            divButtonsTodo.appendChild(buttonNewTask);
-            
-            divToDo.appendChild(divButtonsTodo);
-            divToDo.appendChild(divTitle);
-            divToDo.appendChild(divDeadline);
+        divListHeader.appendChild(divInfosList);
+        divListHeader.appendChild(buttonEditCabecalho);
 
-            if(lists[i].tasks){
-                for(let j = 0; j < lists[i].tasks.length; j++){
-                    const imgEditClone = imgEditTask.cloneNode(true);
-                    const imgDeleteClone = imgDeleteTask.cloneNode(true);
+        const divButtonsTodo = document.createElement("div");
+        const buttonDeleteList = document.createElement("button");
+        buttonDeleteList.textContent = "Apagar Lista";
+        buttonDeleteList.className = "button-delete-task";
+        buttonDeleteList.addEventListener("click", (event) => deleteList(event, i));
 
-                    const divTask = document.createElement('div');
-                    divTask.id = `${divToDo.id}_task${j}`;
+        const buttonNewTask = document.createElement("button");
+        buttonNewTask.textContent = "Nova Tarefa";
+        buttonNewTask.className = "button-new-task";
+        buttonNewTask.addEventListener("click", (event) => newTask(event, i, divToDo));
 
-                    let task = document.createElement('p');
-                    task.textContent = lists[i].tasks[j];
+        divButtonsTodo.appendChild(buttonNewTask);
+        divButtonsTodo.appendChild(buttonDeleteList);
 
-                    const buttonEditTask = document.createElement('button');
-                    buttonEditTask.appendChild(imgEditClone);
-                    buttonEditTask.className = "button-img";
-                    buttonEditTask.addEventListener("click", (event) => editTask(event, i, j, divTask));
+        const divTasks = document.createElement("div");
+        divTasks.id = "divTasks";
+        divTasks.className = "div-tasks";
 
-                    const buttonDeleteTask = document.createElement('button');
-                    buttonDeleteTask.appendChild(imgDeleteClone);
-                    buttonDeleteTask.className = "button-img";
-                    buttonDeleteTask.addEventListener("click", (event) => {
+        divToDo.appendChild(divButtonsTodo);
+        divToDo.appendChild(divListHeader);
+        divToDo.appendChild(divTasks);
+
+        if (lists[i].tasks) {
+            for (let j = 0; j < lists[i].tasks.length; j++) {
+                const imgEditClone = imgEditTask.cloneNode(true);
+                const imgDeleteClone = imgDeleteTask.cloneNode(true);
+
+                const divTask = document.createElement('div');
+                divTask.id = `${divToDo.id}_task${j}`;
+                divTask.className = "div-task";
+
+                let task = document.createElement('p');
+                task.textContent = lists[i].tasks[j];
+
+                const buttonEditTask = document.createElement('button');
+                buttonEditTask.className = "button-task";
+                buttonEditTask.appendChild(imgEditClone);
+                buttonEditTask.addEventListener("click", (event) => editTask(event, i, j, divTask, task, divButtonsTask));
+
+                const buttonDeleteTask = document.createElement('button');
+                buttonDeleteTask.className = "button-task";
+                buttonDeleteTask.appendChild(imgDeleteClone);
+                buttonDeleteTask.addEventListener("click", (event) => {
                     event.preventDefault();
                     deleteTask(event, i, j);
-                    generateListElements()});
+                    generateListElements()
+                });
 
-                    divTask.appendChild(task);
-                    divTask.appendChild(buttonEditTask);
-                    divTask.appendChild(buttonDeleteTask);
+                const divButtonsTask = document.createElement("div");
+                divButtonsTask.appendChild(buttonEditTask);
+                divButtonsTask.appendChild(buttonDeleteTask);
 
-                    divToDo.appendChild(divTask);
-                }
+                divTask.appendChild(task);
+                divTask.appendChild(divButtonsTask);
+
+
+                divTasks.appendChild(divTask);
             }
-        
-            bodyToDo.appendChild(divToDo);
         }
-     }
+
+        bodyToDo.appendChild(divToDo);
+    }
 }
 
-function editTitleList(event, indexList, divTitle){
+function editCabecalhoList(event, indexList, title, deadline, divListHeader, divInfosList, buttonEditCabecalho) {
     event.preventDefault();
-    
-    if(editOpen){
+
+    if (editOpen) {
         return;
     }
 
-    let divEditTitle = document.createElement("div");
-    divEditTitle.id = "divEditTitle";
 
-    let formEditTitle = document.createElement("form");
-    formEditTitle.id = "formEditTitle";
+    divInfosList.remove();
+    buttonEditCabecalho.remove();
 
-    let inputEditTitle = document.createElement("input");
+    const divEditHeaderList = document.createElement("div");
+    divEditHeaderList.id = "divEditHeader";
+
+    const formEditHeaderList = document.createElement("form");
+    formEditHeaderList.id = "formEditHeaderList";
+
+    const inputEditTitle = document.createElement("input");
     inputEditTitle.type = "text";
-    inputEditTitle.value = lists[indexList].title;
+    inputEditTitle.value = title.textContent;
 
-    const buttonSaveEditTitle = document.createElement("button");
-    buttonSaveEditTitle.textContent = "OK";
-    buttonSaveEditTitle.addEventListener("click", (event) => {
+    const inputEditDeadline = document.createElement("input");
+    inputEditDeadline.type = "date";
+    inputEditDeadline.value = deadline.textContent;
+
+    const buttonSaveEditHeaderList = document.createElement("button");
+    buttonSaveEditHeaderList.textContent = "OK";
+    buttonSaveEditHeaderList.addEventListener("click", (event) => {
         event.preventDefault();
-        saveEditTitle(event, indexList, inputEditTitle);
+        saveEditHeader(event, indexList, inputEditTitle, inputEditDeadline);
         generateListElements();
     });
 
-    formEditTitle.appendChild(inputEditTitle);
-    formEditTitle.appendChild(buttonSaveEditTitle);
+    formEditHeaderList.appendChild(inputEditTitle);
+    formEditHeaderList.appendChild(inputEditDeadline);
+    formEditHeaderList.appendChild(buttonSaveEditHeaderList);
 
-    divEditTitle.appendChild(formEditTitle);
+    divEditHeaderList.appendChild(formEditHeaderList);
 
-    divTitle.appendChild(divEditTitle);
+    divListHeader.appendChild(divEditHeaderList);
 
     editOpen = true;
 }
 
-function saveEditTitle(event, indexList, inputEditTitle){
+function saveEditHeader(event, indexList, inputEditTitle, inputEditDeadline) {
     const validateTitle = validateText(inputEditTitle.value);
 
-    if(!validateTitle){
+    if (!validateTitle) {
         editOpen = false;
         return;
     }
 
     lists[indexList].title = inputEditTitle.value;
+    lists[indexList].deadline = inputEditDeadline.value
 
     saveInLocalStorage();
     editOpen = false;
 }
 
-function editDeadlineList(event, indexList, divDeadline){
+function deleteList(event, indexList) {
     event.preventDefault();
-    
-    if(editOpen){
-        return;
-    }
-
-    let formEditDeadline = document.createElement("form");
-    formEditDeadline.id = "formEditTitle";
-
-    let inputEditDeadline = document.createElement("input");
-    inputEditDeadline.type = "date";
-    inputEditDeadline.value = lists[indexList].deadline;
-
-    const buttonSaveEditDeadline = document.createElement("button");
-    buttonSaveEditDeadline.textContent = "OK";
-    buttonSaveEditDeadline.addEventListener("click", (event) => {
-        event.preventDefault();
-        saveEditDeadline(event, indexList, inputEditDeadline);
-        generateListElements();
-    });
-
-    formEditDeadline.appendChild(inputEditDeadline);
-    formEditDeadline.appendChild(buttonSaveEditDeadline);
-
-    divDeadline.appendChild(formEditDeadline);
-
-    editOpen = true;
-}
-
-function saveEditDeadline(event, indexList, inputEditDeadline){
-    const validateDate = validateDeadline(inputEditDeadline.value);
-    if(!validateDate){
-        editOpen = false;
-        return;
-    }
-
-    lists[indexList].deadline = inputEditDeadline.value;
-
-    saveInLocalStorage();
-    editOpen = false;
-}
-
-function deleteList(event, indexList){
-    event.preventDefault();
-    lists.splice(indexList,1);
+    lists.splice(indexList, 1);
 
     saveInLocalStorage();
     generateListElements();
 }
 
-function newTask(event, index, divToDo){
+function newTask(event, index, divToDo) {
     event.preventDefault();
-    if(editOpen){
+    console.log(editOpen);
+    if (editOpen) {
         return;
     }
 
     let form = document.createElement("form");
-    form.id = "form-new-task";
-    
+    form.id = "formNewTask";
+    form.className = "form-new-task";
+
     let input = document.createElement("input");
     input.type = "text";
-    
+
     const buttonOK = document.createElement("button");
     buttonOK.textContent = "OK";
-    
+
     buttonOK.addEventListener("click", (event) => {
         event.preventDefault();
         saveTask(event, input, index, form);
         generateListElements();
     });
-    
+
     form.appendChild(input);
     form.appendChild(buttonOK);
-    divToDo.appendChild(form);    
-    
+    divToDo.appendChild(form);
+
     editOpen = true;
 }
 
-function saveTask(event, input, index){
+function saveTask(event, input, index) {
     event.preventDefault();
 
     const validate = validateText(input.value);
 
-    if(!validate){
+    if (!validate) {
         editOpen = false;
         return;
     }
@@ -296,20 +312,21 @@ function saveTask(event, input, index){
     editOpen = false;
 }
 
-function editTask(event, indexList, indexTask, divTask){
+function editTask(event, indexList, indexTask, divTask, taskToDelete, divButtonsTaskToDelete) {
     event.preventDefault();
-    
-    if(editOpen){
+
+    if (editOpen) {
         return;
     }
 
-    let divEditTask = document.createElement("div");
-    divEditTask.id = "divEditTask";
+    taskToDelete.remove();
+    divButtonsTaskToDelete.remove();
 
-    let formEdit = document.createElement("form");
-    formEdit.id = "formEdit";
+    const formEditTask = document.createElement("form");
+    formEditTask.id = "formEditTask";
+    formEditTask.className = "form-edit-task";
 
-    let inputEdit = document.createElement("input");
+    const inputEdit = document.createElement("input");
     inputEdit.type = "text";
     inputEdit.value = lists[indexList].tasks[indexTask];
 
@@ -317,24 +334,22 @@ function editTask(event, indexList, indexTask, divTask){
     buttonSaveEdit.textContent = "Salvar";
     buttonSaveEdit.addEventListener("click", (event) => {
         event.preventDefault();
-        saveEdit(event, indexList, indexTask, inputEdit, divEditTask);
+        saveEdit(event, indexList, indexTask, inputEdit);
         generateListElements();
     });
 
-    formEdit.appendChild(inputEdit);
-    formEdit.appendChild(buttonSaveEdit);
+    formEditTask.appendChild(inputEdit);
+    formEditTask.appendChild(buttonSaveEdit);
 
-    divEditTask.appendChild(formEdit);
-
-    divTask.appendChild(divEditTask);
+    divTask.appendChild(formEditTask);
 
     editOpen = true;
 }
 
-function saveEdit(event, indexList, indexTask, inputEdit){
+function saveEdit(event, indexList, indexTask, inputEdit) {
     const validate = validateText(inputEdit.value);
 
-    if(!validate){
+    if (!validate) {
         editOpen = false;
         return;
     }
@@ -346,7 +361,7 @@ function saveEdit(event, indexList, indexTask, inputEdit){
     editOpen = false;
 }
 
-function deleteTask(event, indexList, indexTask){
+function deleteTask(event, indexList, indexTask) {
     lists[indexList].tasks.splice(indexTask, 1);
 
     saveInLocalStorage();
@@ -355,36 +370,37 @@ function deleteTask(event, indexList, indexTask){
 const buttonClearAll = document.getElementById("button-clearAll");
 buttonClearAll.addEventListener("click", clearAll);
 
-function clearAll(){
+function clearAll() {
     localStorage.removeItem("todo");
-    generateListElements()
+    lists = [];
+    generateListElements();
 }
 
-function saveInLocalStorage(){
+function saveInLocalStorage() {
     let listsJSON = JSON.stringify(lists);
     localStorage.setItem("todo", listsJSON);
 }
 
-function getInLocalStorage(){
+function getInLocalStorage() {
     let listsJSON = localStorage.getItem("todo");
     let listsOBJ = JSON.parse(listsJSON);
-    if(listsJSON === null){
+    if (listsJSON === null) {
         lists = [];
         return;
     }
     lists = listsOBJ;
 }
 
-function validateText(input){
+function validateText(input) {
     const valueWithoutSpaces = input.trim();
 
-    if(valueWithoutSpaces === ''){
+    if (valueWithoutSpaces === '') {
         return false;
     }
     return true;
 }
 
-function validateDeadline(input){
+function validateDeadline(input) {
     //cria um objeto Date a partir da string da data
     const inputDate = new Date(input);
     inputDate.setHours(inputDate.getHours() + 3);
@@ -392,7 +408,7 @@ function validateDeadline(input){
     const currentDate = new Date();
     currentDate.setHours(0, 0, 0, 0)
 
-    if(inputDate >= currentDate){
+    if (inputDate >= currentDate) {
         return true;
     }
 
@@ -400,4 +416,4 @@ function validateDeadline(input){
 }
 
 getInLocalStorage();
-generateListElements()
+generateListElements();
